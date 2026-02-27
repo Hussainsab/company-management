@@ -1,12 +1,15 @@
-
 import {
   Table,
   Column,
   Model,
   DataType,
-  ForeignKey,
-  BelongsTo,
+  HasOne,
+  Default,
+  BelongsToMany,
 } from "sequelize-typescript";
+import { Profile } from "../profile/profile.model";
+import { ProjectEmployee } from "../project/project-employee.model";
+import { Project } from "../project/project.model";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -19,6 +22,7 @@ export enum UserRole {
   underscored: true,
 })
 export class User extends Model {
+  @Default(DataType.UUIDV4)
   @Column({
     type: DataType.UUID,
     primaryKey: true,
@@ -51,4 +55,10 @@ export class User extends Model {
     defaultValue: true,
   })
   isActive!: boolean;
+
+  @HasOne(() => Profile)
+  profile!: Profile;
+
+  @BelongsToMany(() => Project, () => ProjectEmployee)
+  projects!: Project[];
 }

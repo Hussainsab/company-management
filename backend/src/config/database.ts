@@ -1,5 +1,13 @@
 import { Sequelize } from "sequelize-typescript";
 import dotenv from "dotenv";
+import { User } from "../modules/user/user.model";
+import { Profile } from "../modules/profile/profile.model";
+import { ClientCompany } from "../modules/company/company.model";
+import { Service } from "../modules/service/service.model";
+import { ServiceRequest } from "../modules/service-request/service-request.model";
+import { Project } from "../modules/project/project.model";
+import { ProjectEmployee } from "../modules/project/project-employee.model";
+import { Message } from "../modules/message/message.model";
 
 dotenv.config();
 
@@ -23,6 +31,15 @@ if (isProduction) {
   });
 }
 
-if(sequelize) sequelize.addModels([]);
+sequelize.addModels([
+  User,
+  Profile,
+  ClientCompany,
+  Service,
+  ServiceRequest,
+  Project,
+  ProjectEmployee,
+  Message,
+]);
 
 export { sequelize };

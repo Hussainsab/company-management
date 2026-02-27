@@ -1,53 +1,58 @@
 import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-  AllowNull,
+    Table,
+    Column,
+    Model,
+    DataType,
+    ForeignKey,
+    BelongsTo,
+    AllowNull,
+    Default,
 } from "sequelize-typescript";
-import {User} from '../user/user.model'
+import { User } from "../user/user.model";
 
 @Table({
-    tableName: 'profiles',
-    underscored: true
+    tableName: "profiles",
+    underscored: true,
 })
-
-export class Profile extends Model{
+export class Profile extends Model {
+    @Default(DataType.UUIDV4)
     @Column({
         type: DataType.UUID,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
     })
-    id!:string;
+    id!: string;
 
-    @ForeignKey(()=>User)
+    @ForeignKey(() => User)
     @Column({
-        field:'user_id',
+        field: "user_id",
         type: DataType.UUID,
-        allowNull: false
+        allowNull: false,
     })
-    userId!:string;
+    userId!: string;
 
     @Column({
         type: DataType.STRING,
-        field: 'first_name',
+        field: "first_name",
     })
-    firstName!:string;
+    firstName!: string;
 
     @Column({
         type: DataType.STRING,
-        field: 'last_name'
+        field: "last_name",
     })
-    lastName!:string
+    lastName!: string;
 
     @Column({
         type: DataType.STRING,
     })
-    phone!:string
+    phone!: string;
 
-    @BelongsTo(()=> User)
-    user!: User
+    @Column({
+        type: DataType.STRING,
+    })
+    avatar!: string;
 
+    @BelongsTo(() => User)
+    user!: User;
 }

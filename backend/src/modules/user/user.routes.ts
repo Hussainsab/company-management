@@ -1,12 +1,19 @@
-import express from 'express';
-import UserController from './user.controller';
+import { Router } from "express";
+import UserController from "./user.controller";
+import { authorize } from "../../middlewares/authorize.middleware";
+import { validate } from "../../middlewares/validate.middleware";
+import { createUserValidation, updateProfileValidation } from "../../validations/schemas";
 
-const router  = express.Router();
+const userRoutes = Router();
 
-router.get('/',UserController.getUsers)
+// Admin-only routes
+userRoutes.post("/", authorize("admin"), validate(createUserValidation), UserController.createUser);
+userRoutes.get("/", authorize("admin"), UserController.getUsers);
+userRoutes.delete("/:id", authorize("admin"), UserController.deleteUser);
+userRoutes.patch("/:id", authorize("admin"), UserController.updateUser);
+userRoutes.get("/:id", UserController.getUser);
 
-router.post('/',UserController.createUser)
+// Profile update (any authenticated user updates own profile)
+userRoutes.put("/profile/me", validate(updateProfileValidation), UserController.updateProfile);
 
-router.get('/:id', UserController.getUser)
-
-export default router;
+export default userRoutes;
