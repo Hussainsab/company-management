@@ -82,7 +82,18 @@ A comprehensive web application for managing companies, employees, projects, and
      npm sequelize db:migrate
      ```
 
-5. Start the server:
+5. **For Local Development**: Start the development server
+   ```bash
+   npm run dev
+   ```
+
+### Running in Production
+1. Build the TypeScript code into JavaScript:
+   ```bash
+   npm run build
+   ```
+
+2. Start the production server:
    ```bash
    npm run start
    ```
