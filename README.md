@@ -189,3 +189,9 @@ The production build will be created in the `dist` folder.
 
 ## Demo
 ![Alt text for the image](./assets/demo.gif)
+
+Test login credentials 
+
+Admin: pro_hss_test@gmail.com / oGaJ=0H87@+9
+Employee: lufy@hss.com / Admin@123
+Client: zoro@llmsolution.com / Admin@123
