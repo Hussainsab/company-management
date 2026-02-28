@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { sequelize } from "./src/config/database";
+import { seedAdmin } from "./seed";
 import authRouter from "./src/modules/auth/auth.routes";
 import userRoutes from "./src/modules/user/user.routes";
 import companyRoutes from "./src/modules/company/company.routes";
@@ -57,6 +58,10 @@ async function bootstrap() {
         await sequelize.authenticate();
         await sequelize.sync({ alter: true });
         console.log("✅ Database connected and synced");
+
+        // Seed default admin if it doesn't exist
+        await seedAdmin();
+
         app.listen(PORT, () => {
             console.log(`🚀 Hussain Software Solutions API → http://localhost:${PORT}`);
         });

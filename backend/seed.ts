@@ -6,11 +6,8 @@ import { User, UserRole } from "./src/modules/user/user.model";
 import { Profile } from "./src/modules/profile/profile.model";
 import bcrypt from "bcrypt";
 
-async function seed() {
+export async function seedAdmin() {
     try {
-        await sequelize.authenticate();
-        await sequelize.sync({ alter: true });
-
         const adminEmail = process.env.ADMIN_EMAIL || "admin@hussain.dev";
         const adminPassword = process.env.ADMIN_PASSWORD || "Admin@123";
 
@@ -34,10 +31,6 @@ async function seed() {
             console.log(`ℹ️  Admin already exists: ${adminEmail}`);
         }
     } catch (error) {
-        console.error("❌ Seed failed:", error);
-    } finally {
-        await sequelize.close();
+        console.error("❌ Admin Seed failed:", error);
     }
 }
-
-seed();
