@@ -156,7 +156,7 @@ const Projects = () => {
                     </p>
                 </div>
 
-                <Button
+                {user?.role === 'admin' && <Button
                     variant="primary"
                     size="lg"
                     className="shadow-indigo-500/20"
@@ -164,7 +164,7 @@ const Projects = () => {
                     onClick={() => setShowModal(true)}
                 >
                     Create Project
-                </Button>
+                </Button>}
             </div>
 
             {/* Navigation & Search */}
