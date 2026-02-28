@@ -3,15 +3,13 @@ import {
     Building2,
     Plus,
     Mail,
-    Phone,
     Globe,
     Search,
     Loader2,
     MoreVertical,
     MapPin,
-    ExternalLink,
-    ChevronRight,
-    Briefcase
+    Briefcase,
+    UserCircle2
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 // import Card from '../components/ui/Card';
@@ -19,7 +17,6 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Modal from '../components/ui/Modal';
 import { useGetCompaniesQuery, useCreateCompanyMutation, useGetUsersQuery } from '../services/apiService';
-import type { ClientCompany } from '../types';
 import Card from '../components/ui/Card';
 
 const Companies = () => {
@@ -129,11 +126,6 @@ const Companies = () => {
                 ) : filteredCompanies.length > 0 ? (
                     filteredCompanies.map((company) => (
                         <Card key={company.id} className="group relative pr-4" variant="solid" hover={true}>
-                            <div className="absolute top-0 right-0 p-6">
-                                <button className="p-2 text-slate-500 hover:text-white transition-colors bg-white/5 rounded-xl">
-                                    <MoreVertical size={18} />
-                                </button>
-                            </div>
 
                             <div className="flex flex-col h-full">
                                 <div className="flex items-center gap-5 mb-8">
@@ -164,6 +156,17 @@ const Companies = () => {
                                         </div>
                                         <span className="text-sm font-bold text-slate-300 truncate">{company.address || 'Operational HQ undisclosed'}</span>
                                     </div>
+                                    <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/5 group-hover:border-blue-500/20 transition-colors">
+                                        <div className="p-2 rounded-lg bg-slate-800 text-slate-400">
+                                            <UserCircle2 size={16} />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-300 truncate">
+                                            {company.clientUser?.profile
+                                                ? `${company.clientUser.profile.firstName} ${company.clientUser.profile.lastName}`
+                                                : company.clientUser?.email || 'No assigned client'}
+                                            <span className="ml-2 text-[10px] uppercase text-slate-500 tracking-widest bg-white/5 px-2 py-0.5 rounded-md">Account Holder</span>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
@@ -175,10 +178,6 @@ const Companies = () => {
                                         </div>
                                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Active ventures</span>
                                     </div>
-                                    <button className="flex items-center gap-2 text-blue-400 font-black text-[10px] uppercase tracking-[0.2em] group-hover:translate-x-1 transition-transform">
-                                        Open dossier
-                                        <ChevronRight size={14} />
-                                    </button>
                                 </div>
                             </div>
                         </Card>

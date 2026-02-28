@@ -27,6 +27,7 @@ import {
     useGetCompaniesQuery,
     useGetUsersQuery,
     useAssignEmployeesMutation,
+    useUnassignEmployeeMutation,
     useUpdateRequestStatusMutation // re-using a generic name or we need a specific one for projects - wait, I need to check apiService for updateProjectStatus.
 } from '../services/apiService.ts';
 import { useAuth } from '../store/AuthContext.tsx';
@@ -60,6 +61,7 @@ const Projects = () => {
     const { data: usersData } = useGetUsersQuery({ page: 1, limit: 100, role: 'employee' }, { skip: user?.role !== 'admin' });
     const [createProject, { isLoading: creating }] = useCreateProjectMutation();
     const [assignEmployee] = useAssignEmployeesMutation();
+    const [unassignEmployee] = useUnassignEmployeeMutation();
     // I need to add useUpdateProjectStatusMutation to apiService first if it's missing, let's use a generic fetch for now or add it. I'll modify apiService concurrently.
 
     const projects = data?.projects || [];
@@ -95,11 +97,19 @@ const Projects = () => {
 
     const handleAssignEmployee = async (projectId: string, employeeId: string) => {
         try {
-            await assignEmployee({ projectId, employeeId }).unwrap();
-            setAssignModalOpen(false);
-            window.location.reload(); // Hard refresh to ensure UI is completely synchronized
+            const updatedProject = await assignEmployee({ projectId, employeeId }).unwrap();
+            setSelectedProjectForAssign(updatedProject);
         } catch (error) {
             console.error('Failed to assign employee:', error);
+        }
+    };
+
+    const handleUnassignEmployee = async (projectId: string, employeeId: string) => {
+        try {
+            const updatedProject = await unassignEmployee({ projectId, employeeId }).unwrap();
+            setSelectedProjectForAssign(updatedProject);
+        } catch (error) {
+            console.error('Failed to unassign employee:', error);
         }
     };
 
@@ -198,11 +208,11 @@ const Projects = () => {
                 ) : filteredProjects.length > 0 ? (
                     filteredProjects.map((project) => (
                         <Card key={project.id} className="group overflow-visible relative" variant="solid" hover={true}>
-                            <div className="absolute top-0 right-0 p-6">
+                            {/* <div className="absolute top-0 right-0 p-6">
                                 <button className="p-2 text-slate-500 hover:text-white transition-colors bg-white/5 rounded-xl">
                                     <MoreHorizontal size={18} />
                                 </button>
-                            </div>
+                            </div> */}
 
                             {/* Dropdowns for Admin (Assign) and Employee (Status) are placed intelligently */}
                             {user?.role === 'admin' && (
@@ -211,7 +221,7 @@ const Projects = () => {
                                         setSelectedProjectForAssign(project);
                                         setAssignModalOpen(true);
                                     }}
-                                    className="absolute top-16 right-6 z-20 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg border border-indigo-500/50"
+                                    className="absolute top-0 right-6 z-20 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg border border-indigo-500/50"
                                 >
                                     Manage Team
                                 </button>
@@ -279,10 +289,6 @@ const Projects = () => {
                                         <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest pl-2">Unassigned</div>
                                     )}
                                 </div>
-                                <button className="flex items-center gap-2 text-indigo-400 font-black text-[10px] uppercase tracking-[0.2em] group-hover:translate-x-1 transition-transform">
-                                    Vitals
-                                    <ChevronRight size={14} />
-                                </button>
                             </div>
                         </Card>
                     ))
@@ -384,37 +390,69 @@ const Projects = () => {
                 </form>
             </Modal>
 
-            {/* Modal for Employee Assignment */}
-            <Modal isOpen={assignModalOpen} onClose={() => { setAssignModalOpen(false); setSelectedProjectForAssign(null); }} title="Assign Personnel" maxWidth="md">
+            <Modal isOpen={assignModalOpen} onClose={() => { setAssignModalOpen(false); setSelectedProjectForAssign(null); }} title="Manage Team" maxWidth="md">
                 <div className="space-y-6 pt-4 pb-2">
                     <p className="text-sm text-slate-400 font-medium px-1">
-                        Select an available team member to allocate to <span className="text-white font-bold">{selectedProjectForAssign?.name}</span>.
+                        Manage personnel allocated to <span className="text-white font-bold">{selectedProjectForAssign?.name}</span>.
                     </p>
-                    <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                        {usersData?.users?.filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id)).length && usersData.users.filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id)).length > 0 ? (
-                            usersData.users
-                                .filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id))
-                                .map((u: any) => (
-                                    <div key={u.id} className="flex items-center justify-between p-4 rounded-3xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all group">
+                    <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+
+                        {/* Assigned Personnel Section */}
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest pl-1 mb-2">Assigned Personnel</h4>
+                            {selectedProjectForAssign?.employees && selectedProjectForAssign.employees.length > 0 ? (
+                                selectedProjectForAssign.employees.map((u: any) => (
+                                    <div key={u.id} className="flex items-center justify-between p-4 rounded-3xl bg-indigo-500/5 border border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-[#131c31] border border-white/5 text-slate-300 flex items-center justify-center font-black text-lg group-hover:text-indigo-400 group-hover:border-indigo-500/50 transition-colors shadow-inner">
-                                                {u.profile?.firstName?.[0] || u.email[0].toUpperCase()}
+                                                {u.profile?.firstName?.[0] || u.name?.[0] || u.email[0].toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-white text-sm tracking-tight">{u.profile?.firstName} {u.profile?.lastName}</p>
+                                                <p className="font-bold text-white text-sm tracking-tight">{u.profile?.firstName || u.name} {u.profile?.lastName || ''}</p>
                                                 <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">{u.email}</p>
                                             </div>
                                         </div>
-                                        <Button size="sm" className="!rounded-xl shadow-lg border border-white/10 group-hover:border-indigo-500/30" onClick={() => handleAssignEmployee(selectedProjectForAssign!.id, u.id)}>
-                                            Assign Node
+                                        <Button size="sm" variant="danger" className="!rounded-xl shadow-lg group-hover:bg-rose-500/20" onClick={() => handleUnassignEmployee(selectedProjectForAssign!.id, u.id)}>
+                                            Remove
                                         </Button>
                                     </div>
                                 ))
-                        ) : (
-                            <div className="text-center py-12 text-slate-500 font-medium bg-white/5 rounded-3xl border border-white/5 shadow-inner">
-                                No eligible personnel available or all are already assigned.
-                            </div>
-                        )}
+                            ) : (
+                                <div className="text-center py-6 text-slate-500 font-medium bg-white/5 rounded-3xl border border-white/5 shadow-inner text-sm">
+                                    No personnel currently assigned.
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Available Personnel Section */}
+                        <div className="space-y-3 pt-4 border-t border-white/10">
+                            <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest pl-1 mb-2">Available to Assign</h4>
+                            {usersData?.users?.filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id)).length && usersData.users.filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id)).length > 0 ? (
+                                usersData.users
+                                    .filter(u => !selectedProjectForAssign?.employees?.some(e => e.id === u.id))
+                                    .map((u: any) => (
+                                        <div key={u.id} className="flex items-center justify-between p-4 rounded-3xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all group">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-[#131c31] border border-white/5 text-slate-300 flex items-center justify-center font-black text-lg group-hover:text-indigo-400 group-hover:border-indigo-500/50 transition-colors shadow-inner">
+                                                    {u.profile?.firstName?.[0] || u.name?.[0] || u.email[0].toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-white text-sm tracking-tight">{u.profile?.firstName || u.name} {u.profile?.lastName || ''}</p>
+                                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">{u.email}</p>
+                                                </div>
+                                            </div>
+                                            <Button size="sm" className="!rounded-xl shadow-lg border border-white/10 group-hover:border-indigo-500/30" onClick={() => handleAssignEmployee(selectedProjectForAssign!.id, u.id)}>
+                                                Assign Node
+                                            </Button>
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="text-center py-6 text-slate-500 font-medium bg-white/5 rounded-3xl border border-white/5 shadow-inner text-sm">
+                                    No eligible personnel available.
+                                </div>
+                            )}
+                        </div>
+
                     </div>
                 </div>
             </Modal>

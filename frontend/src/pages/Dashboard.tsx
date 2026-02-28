@@ -76,8 +76,8 @@ const Dashboard = () => {
         ];
     } else if (user?.role === 'employee') {
         statCards = [
-            { title: 'Assigned Initiatives', value: stats?.totalProjects || '0', icon: <Briefcase size={24} />, color: 'emerald' },
-            { title: 'Active Initiatives', value: stats?.activeProjects || '0', icon: <FolderKanban size={24} />, color: 'indigo' },
+            { title: 'Assigned projects', value: stats?.totalProjects || '0', icon: <Briefcase size={24} />, color: 'emerald' },
+            { title: 'Active projects', value: stats?.activeProjects || '0', icon: <FolderKanban size={24} />, color: 'indigo' },
         ];
     } else if (user?.role === 'client') {
         statCards = [
@@ -162,16 +162,12 @@ const Dashboard = () => {
                                             />
                                         </div>
                                     </div>
-
-                                    <button className="opacity-0 group-hover:opacity-100 p-3 rounded-full bg-indigo-600 text-white transition-all duration-300 mr-2 -translate-x-4 group-hover:translate-x-0">
-                                        <ArrowRight size={20} />
-                                    </button>
                                 </div>
                             ))
                         ) : (
                             <div className="flex flex-col items-center justify-center py-12 text-slate-500 border-2 border-dashed border-white/5 rounded-[2rem]">
                                 <Briefcase size={40} className="mb-3 opacity-20" />
-                                <p className="font-bold uppercase tracking-widest text-sm">No active initiatives</p>
+                                <p className="font-bold uppercase tracking-widest text-sm">No active projects</p>
                             </div>
                         )}
                     </div>
@@ -230,16 +226,6 @@ const Dashboard = () => {
                                 </div>
                                 <ChevronRight size={18} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
                             </button>
-                        </div>
-
-                        <div className="mt-12 p-6 rounded-3xl bg-gradient-to-br from-indigo-600/20 to-blue-600/10 border border-indigo-500/20">
-                            <h4 className="text-white font-bold mb-2">Need Assistance?</h4>
-                            <p className="text-slate-400 text-xs leading-relaxed mb-4">
-                                Our support team is available 24/7 to help you manage your enterprise resources.
-                            </p>
-                            <Button variant="outline" size="sm" className="w-full text-[10px] py-2 border-indigo-500/30 text-indigo-400">
-                                Contact Enterprise Support
-                            </Button>
                         </div>
                     </Card>
                 </div>

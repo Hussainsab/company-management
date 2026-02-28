@@ -3,6 +3,7 @@ import { User, UserRole } from "../user/user.model";
 import { Project, ProjectStatus } from "../project/project.model";
 import { ProjectEmployee } from "../project/project-employee.model";
 import { ServiceRequest, ServiceRequestStatus } from "../service-request/service-request.model";
+import { ClientCompany } from "../company/company.model";
 import { Request, Response } from "express";
 import { authorize } from "../../middlewares/authorize.middleware";
 
@@ -16,7 +17,7 @@ dashboardRoutes.get("/stats", async (req: Request, res: Response) => {
         if (role === UserRole.ADMIN) {
             const [totalEmployees, totalClients, totalProjects, pendingRequests] = await Promise.all([
                 User.count({ where: { role: UserRole.EMPLOYEE } }),
-                User.count({ where: { role: UserRole.CLIENT } }),
+                ClientCompany.count(),
                 Project.count(),
                 ServiceRequest.count({ where: { status: ServiceRequestStatus.PENDING } }),
             ]);

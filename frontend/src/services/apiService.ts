@@ -98,6 +98,13 @@ export const apiService = createApi({
             }),
             invalidatesTags: (result, error, { projectId }) => [{ type: 'Project', id: projectId }],
         }),
+        unassignEmployee: builder.mutation<Project, { projectId: string; employeeId: string }>({
+            query: ({ projectId, employeeId }) => ({
+                url: `/projects/${projectId}/employees/${employeeId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: (result, error, { projectId }) => [{ type: 'Project', id: projectId }],
+        }),
 
         // Service Requests
         getRequests: builder.query<ServiceRequestResponse, { page: number; limit: number; status?: string }>({
@@ -132,6 +139,12 @@ export const apiService = createApi({
         // Dashboard
         getDashboardStats: builder.query<any, void>({
             query: () => '/dashboard/stats',
+            providesTags: [
+                { type: 'Project', id: 'LIST' },
+                { type: 'Company', id: 'LIST' },
+                { type: 'User', id: 'LIST' },
+                { type: 'ServiceRequest', id: 'LIST' }
+            ],
         }),
 
         // Messages
@@ -183,6 +196,7 @@ export const {
     useGetProjectsQuery,
     useCreateProjectMutation,
     useAssignEmployeesMutation,
+    useUnassignEmployeeMutation,
     useGetRequestsQuery,
     useCreateRequestMutation,
     useUpdateRequestStatusMutation,

@@ -104,6 +104,6 @@ export default class ProjectService {
         const record = await ProjectEmployee.findOne({ where: { projectId, employeeId } });
         if (!record) throw new NotFoundError("Assignment not found");
         await record.destroy();
-        return { message: "Employee unassigned" };
+        return this.getProject(projectId);
     }
 }

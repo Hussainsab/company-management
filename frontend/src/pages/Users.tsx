@@ -1,30 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import {
     Users as UsersIcon,
-    Plus,
-    Trash2,
     Mail,
-    Shield,
     Search,
     UserPlus,
     Loader2,
     MoreHorizontal,
     Phone,
-    MapPin,
-    Filter
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { useAuth } from '../store/AuthContext';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import Modal from '../components/ui/Modal';
 import { useGetUsersQuery, useCreateUserMutation } from '../services/apiService';
-import type { User, UserRole } from '../types';
+import type { UserRole } from '../types';
 
 const Users = () => {
-    const { user: currentUser } = useAuth();
     const [search, setSearch] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [activeRole, setActiveRole] = useState<string | null>(null);
@@ -41,7 +34,7 @@ const Users = () => {
         message: '',
         onConfirm: () => { },
     });
-    const [page, setPage] = useState(page => page || 1);
+    const [page, setPage] = useState(1);
     const [limit] = useState(9);
     const [formData, setFormData] = useState({
         email: '',
@@ -74,7 +67,7 @@ const Users = () => {
 
     useEffect(() => {
         if (inView && hasMore && !isFetching && users.length > 0) {
-            setPage(prev => (prev || 1) + 1);
+            setPage((prev: number) => (prev || 1) + 1);
         }
     }, [inView, hasMore, isFetching, users.length]);
 
@@ -283,14 +276,24 @@ const Users = () => {
                         placeholder="john@company.com"
                         required
                     />
-                    <Input
-                        label="Initial Password"
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        placeholder="••••••••"
-                        required
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Input
+                            label="Initial Password"
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="••••••••"
+                            required
+                        />
+                        <Input
+                            label="Phone Number"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            placeholder="+1 234 567 8900"
+                            required
+                        />
+                    </div>
                     <div className="space-y-2">
                         <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Member Role</label>
                         <div className="grid grid-cols-3 gap-3 p-1.5 bg-black/20 rounded-2xl border border-white/5">
@@ -314,10 +317,10 @@ const Users = () => {
 
                     <div className="flex gap-4 pt-4">
                         <Button type="button" variant="secondary" className="flex-1" onClick={() => setShowModal(false)}>
-                            Discard
+                            clear
                         </Button>
                         <Button type="submit" className="flex-1 shadow-indigo-600/30" isLoading={creating}>
-                            Finalize Access
+                            create
                         </Button>
                     </div>
                 </form>

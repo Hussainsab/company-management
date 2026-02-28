@@ -41,12 +41,8 @@ const Login = () => {
             <div className="w-full max-w-[480px] relative z-10 animate-in fade-in zoom-in-95 duration-1000">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-12">
-                    <div className="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl shadow-indigo-600/40 relative group cursor-pointer hover:scale-110 transition-transform duration-500">
-                        <div className="absolute inset-0 bg-white/20 rounded-[2rem] animate-ping opacity-20 group-hover:opacity-100" />
-                        <Trophy className="text-white w-10 h-10 relative z-10" />
-                    </div>
                     <h1 className="text-5xl font-black text-white tracking-tighter text-center">
-                        HSS <span className="text-indigo-500">Portal</span>
+                        Hussain Software solutions <span className="text-indigo-500">Portal</span>
                     </h1>
                     <p className="text-slate-500 mt-3 font-bold uppercase tracking-[0.4em] text-[10px]">Enterprise Resource Management</p>
                 </div>
@@ -59,7 +55,7 @@ const Login = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <Input
-                            label="Operational Identity"
+                            label="Email"
                             type="email"
                             placeholder="name@hss-enterprise.com"
                             value={email}
@@ -71,7 +67,7 @@ const Login = () => {
 
                         <div className="relative">
                             <Input
-                                label="Security Protocol"
+                                label="Password"
                                 type="password"
                                 placeholder="••••••••"
                                 value={password}
@@ -80,12 +76,6 @@ const Login = () => {
                                 required
                                 disabled={loading}
                             />
-                            <button
-                                type="button"
-                                className="absolute right-4 bottom-4 text-[10px] font-black text-indigo-400/50 hover:text-indigo-400 uppercase tracking-widest transition-colors"
-                            >
-                                Recover
-                            </button>
                         </div>
 
                         {error && (
@@ -105,19 +95,11 @@ const Login = () => {
                             isLoading={loading}
                         >
                             <span className="flex items-center gap-3">
-                                Initialize Secure Entry
+                                Login
                                 <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
                             </span>
                         </Button>
                     </form>
-
-                    <div className="mt-12 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-slate-600 pt-8 border-t border-white/5">
-                        <span className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                            Encryption Active
-                        </span>
-                        <span className="hover:text-indigo-400 cursor-pointer transition-colors">v.4.0.2 Stable</span>
-                    </div>
                 </Card>
             </div>
 

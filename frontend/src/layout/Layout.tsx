@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         { path: '/projects', label: 'Projects', icon: <FolderKanban size={20} /> },
         { path: '/messages', label: 'Communication', icon: <MessageSquare size={20} /> },
         { path: '/service-requests', label: 'Services', icon: <ClipboardList size={20} />, role: ['admin', 'client'] },
-        { path: '/profile', label: 'Identity', icon: <UserCircle size={20} /> },
+        { path: '/profile', label: 'Profile', icon: <UserCircle size={20} /> },
     ];
 
     const handleLogout = () => {
@@ -118,7 +118,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                             `}
                         >
                             <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-                            {isSidebarOpen && <span className="font-bold text-sm tracking-tight text-nowrap">Terminate Session</span>}
+                            {isSidebarOpen && <span className="font-bold text-sm tracking-tight text-nowrap">Logout</span>}
                         </button>
                     </div>
                 </div>
